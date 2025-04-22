@@ -1,25 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Quiz App</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Enhanced Quiz App</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <div class="quiz-container">
-    <h1>Multiple Choice Quiz</h1>
-    <div id="timer">Time: 00:00</div>
-    <div id="quiz-box">
-      <h2 id="question">Question</h2>
-      <div id="options"></div>
-      <button id="next-btn">Next</button>
-    </div>
-    <div id="result" class="hidden">
-      <h2>Quiz Completed!</h2>
-      <p id="score"></p>
-      <button onclick="location.reload()">Restart</button>
-    </div>
+  <div class="top-bar">
+    <label class="switch">
+      <input type="checkbox" id="theme-toggle" />
+      <span class="slider"></span>
+    </label>
+    <select id="category-select">
+      <option value="">Select Category</option>
+      <option value="General">General</option>
+      <option value="Math">Math</option>
+      <option value="Science">Science</option>
+    </select>
+    <button id="start-btn">Start Quiz</button>
   </div>
+
+  <div class="quiz-container hidden" id="quiz-container">
+    <h2 id="question">Loading...</h2>
+    <div id="options"></div>
+    <button id="next-btn" class="hidden">Next</button>
+  </div>
+
+  <div id="result" class="hidden">
+    <h2>Quiz Completed!</h2>
+    <p id="score"></p>
+    <button onclick="location.reload()">Restart</button>
+  </div>
+
+  <audio id="correct-sound" src="sounds/correct.mp3" preload="auto"></audio>
+  <audio id="wrong-sound" src="sounds/wrong.mp3" preload="auto"></audio>
 
   <script src="script.js"></script>
 </body>

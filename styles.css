@@ -1,49 +1,101 @@
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
-  padding: 30px;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background-color: #f0f0f0;
+  color: #333;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  transition: background 0.4s, color 0.4s;
+}
+
+body.dark {
+  background-color: #121212;
+  color: #fff;
+}
+
+.top-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+}
+
+.theme-switch {
+  position: relative;
+  width: 50px;
+  height: 25px;
+}
+
+.theme-switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  top: 0; left: 0;
+  right: 0; bottom: 0;
+  background-color: #ccc;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4a00e0;
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
 }
 
 .quiz-container {
-  background: white;
+  background: #fff;
   padding: 25px;
-  border-radius: 10px;
+  border-radius: 12px;
   max-width: 600px;
-  width: 100%;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-h1 {
-  text-align: center;
-}
-
-#timer {
-  text-align: right;
-  font-size: 14px;
-  margin-bottom: 10px;
-  color: #555;
+body.dark .quiz-container {
+  background-color: #1f1f1f;
 }
 
 #question {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 #options button {
-  display: block;
   width: 100%;
+  padding: 12px;
   margin: 10px 0;
-  padding: 10px;
-  background-color: #eee;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f1f1f1;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s;
 }
 
-#options button:hover {
-  background-color: #ddd;
+body.dark #options button {
+  background-color: #2d2d2d;
+  color: #fff;
 }
 
 #options button.correct {
@@ -54,14 +106,29 @@ h1 {
   background-color: #f7a0a0;
 }
 
-#next-btn {
-  display: none;
-  padding: 10px 20px;
+.btn {
+  background-color: #4a00e0;
+  color: white;
+  border: none;
+  padding: 12px 20px;
   font-size: 16px;
-  margin-top: 20px;
+  border-radius: 8px;
   cursor: pointer;
+  margin-top: 20px;
+  display: none;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background-color: #3700b3;
 }
 
 .hidden {
   display: none;
+}
+
+#timer {
+  text-align: right;
+  font-size: 14px;
+  margin-bottom: 10px;
 }

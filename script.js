@@ -1,105 +1,95 @@
-const questions = [
-  {
-    question: "What is the capital of France?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    answer: "Paris"
-  },
-  {
-    question: "Which planet is known as the Red Planet?",
-    options: ["Earth", "Venus", "Mars", "Saturn"],
-    answer: "Mars"
-  },
-  {
-    question: "Who wrote 'Hamlet'?",
-    options: ["Charles Dickens", "Leo Tolstoy", "William Shakespeare", "Mark Twain"],
-    answer: "William Shakespeare"
-  },
-  {
-    question: "What is 10 + 5?",
-    options: ["12", "15", "14", "13"],
-    answer: "15"
-  }
-];
+const allQuestions = {
+  General: [
+    { question: "What is the capital of France?", options: ["Berlin", "Madrid", "Paris", "Rome"], answer: "Paris" },
+    { question: "Which planet is known as the Red Planet?", options: ["Earth", "Mars", "Jupiter", "Venus"], answer: "Mars" }
+  ],
+  Math: [
+    { question: "What is 5 + 3?", options: ["6", "7", "8", "9"], answer: "8" },
+    { question: "What is 12 x 2?", options: ["22", "24", "26", "28"], answer: "24" }
+  ],
+  Science: [
+    { question: "Water boils at what temperature?", options: ["90°C", "80°C", "100°C", "120°C"], answer: "100°C" },
+    { question: "H2O is the formula of?", options: ["Oxygen", "Water", "Hydrogen", "Salt"], answer: "Water" }
+  ]
+};
 
-let currentQuestionIndex = 0;
-let score = 0;
-let time = 0;
-let timerInterval;
-
-const questionElement = document.getElementById("question");
-const optionsElement = document.getElementById("options");
-const nextButton = document.getElementById("next-btn");
+let questions = [], current = 0, score = 0, time = 0, timer;
+const quizBox = document.querySelector(".quiz-container");
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const nextBtn = document.getElementById("next-btn");
 const resultBox = document.getElementById("result");
-const scoreText = document.getElementById("score");
-const timerDisplay = document.getElementById("timer");
+const scoreEl = document.getElementById("score");
+const timerEl = document.getElementById("timer");
+const correctSound = document.getElementById("correct-sound");
+const wrongSound = document.getElementById("wrong-sound");
+
+document.getElementById("start-btn").onclick = () => {
+  const category = document.getElementById("category-select").value;
+  if (!category) return alert("Please select a category");
+  questions = [...allQuestions[category]].sort(() => 0.5 - Math.random());
+  current = 0;
+  score = 0;
+  time = 0;
+  resultBox.classList.add("hidden");
+  quizBox.classList.remove("hidden");
+  startTimer();
+  showQuestion();
+};
+
+document.getElementById("theme-toggle").addEventListener("change", e => {
+  document.body.classList.toggle("dark", e.target.checked);
+});
 
 function startTimer() {
-  timerInterval = setInterval(() => {
+  clearInterval(timer);
+  timer = setInterval(() => {
     time++;
-    let minutes = String(Math.floor(time / 60)).padStart(2, '0');
-    let seconds = String(time % 60).padStart(2, '0');
-    timerDisplay.textContent = `Time: ${minutes}:${seconds}`;
+    timerEl.textContent = `Time: ${String(Math.floor(time / 60)).padStart(2, '0')}:${String(time % 60).padStart(2, '0')}`;
   }, 1000);
 }
 
-function startQuiz() {
-  questions.sort(() => Math.random() - 0.5);
-  currentQuestionIndex = 0;
-  score = 0;
-  time = 0;
-  startTimer();
-  showQuestion();
-}
-
 function showQuestion() {
-  resetState();
-  const current = questions[currentQuestionIndex];
-  questionElement.textContent = current.question;
-  current.options.forEach(option => {
+  nextBtn.style.display = "none";
+  optionsEl.innerHTML = "";
+  const q = questions[current];
+  questionEl.textContent = q.question;
+  q.options.forEach(opt => {
     const btn = document.createElement("button");
-    btn.textContent = option;
-    btn.addEventListener("click", () => selectAnswer(btn, current.answer));
-    optionsElement.appendChild(btn);
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(btn, q.answer);
+    optionsEl.appendChild(btn);
   });
 }
 
-function resetState() {
-  nextButton.style.display = "none";
-  optionsElement.innerHTML = "";
-}
-
-function selectAnswer(button, correctAnswer) {
-  const buttons = optionsElement.querySelectorAll("button");
-  buttons.forEach(btn => {
-    btn.disabled = true;
-    if (btn.textContent === correctAnswer) {
-      btn.classList.add("correct");
-    } else if (btn === button) {
-      btn.classList.add("wrong");
-    }
+function selectAnswer(btn, correct) {
+  const allBtns = optionsEl.querySelectorAll("button");
+  allBtns.forEach(b => {
+    b.disabled = true;
+    if (b.textContent === correct) b.classList.add("correct");
+    if (b !== btn && b.textContent !== correct) b.classList.add("wrong");
   });
 
-  if (button.textContent === correctAnswer) {
+  if (btn.textContent === correct) {
+    correctSound.play();
     score++;
-  }
-
-  nextButton.style.display = "inline-block";
-}
-
-nextButton.addEventListener("click", () => {
-  currentQuestionIndex++;
-  if (currentQuestionIndex < questions.length) {
-    showQuestion();
   } else {
-    endQuiz();
+    wrongSound.play();
+    btn.classList.add("wrong");
   }
-});
 
-function endQuiz() {
-  clearInterval(timerInterval);
-  document.getElementById("quiz-box").classList.add("hidden");
-  resultBox.classList.remove("hidden");
-  scoreText.textContent = `You scored ${score} out of ${questions.length} in ${Math.floor(time / 60)} min ${time % 60} sec.`;
+  nextBtn.style.display = "inline-block";
 }
 
-startQuiz();
+nextBtn.onclick = () => {
+  current++;
+  if (current < questions.length) showQuestion();
+  else finishQuiz();
+};
+
+function finishQuiz() {
+  clearInterval(timer);
+  quizBox.classList.add("hidden");
+  resultBox.classList.remove("hidden");
+  scoreEl.textContent = `You scored ${score} out of ${questions.length} in ${Math.floor(time / 60)} min ${time % 60} sec.`;
+}
